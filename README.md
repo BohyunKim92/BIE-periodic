@@ -17,6 +17,7 @@ First, install Git. Then use the following command to download the software and 
 
 ```bash
 $ git clone https://github.com/BohyunKim92/BIE-periodic
+```
 
 Alternatively, you can click the `<> Code` tab in the upper-right corner of the repository page and select **Download ZIP**.
 
@@ -24,3 +25,4 @@ In MATLAB, open the `BIE-periodic` directory and then type the following command
 
 ```matlab
 addpath('mps_helpers')
+```
