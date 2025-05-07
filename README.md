@@ -1,28 +1,41 @@
 # BIE_periodic
 
-Code implementing the Boundary Integral Equation (BIE) methods with the doubly-periodic Green's function from *"Layer Potential Methods for Doubly-Periodic Harmonic Functions"* by Bohyun Kim and Braxton Osting (preprint, arXiv). Please contact hyunbrianna@gmail.com
+Code implementing the Boundary Integral Equation (BIE) methods with the doubly-periodic Green's function from *"Layer Potential Methods for Doubly-Periodic Harmonic Functions"* by Bohyun Kim and Braxton Osting (preprint, arXiv). Please contact hyunbrianna@gmail.com for any inquiries.
 
-## Acknowledgement
+## Acknowledgements
 
-This software uses several classes and functions from `mpspack`, authored by Alex Barnett and Timo Betcke (see [https://github.com/ahbarnett/mpspack](https://github.com/ahbarnett/mpspack)). I gratefully acknowledge partial support from the National Science Foundation under grant NSF DMS-2136198.
+This software utilizes several classes and functions from `mpspack`, authored by Alex Barnett and Timo Betcke (see [https://github.com/ahbarnett/mpspack](https://github.com/ahbarnett/mpspack)). I acknowledge partial support from the National Science Foundation under grant NSF DMS-2136198.
 
+## Requirements
 
-## Requirement
-
-Matlab 2008a or newer. No need for any toolbox.
+- Matlab 2008a or newer (No additional toolbox required).
 
 ## Installation
 
-First, install Git. Then use the following command to download the software and its associated directory:
+1. **Install Git** (if not already installed).
+2. Clone the repository with the following command:
 
-```bash
-$ git clone https://github.com/BohyunKim92/BIE-periodic
-```
+    ```bash
+    $ git clone https://github.com/BohyunKim92/BIE-periodic
+    ```
 
-Alternatively, you can click the `<> Code` tab in the upper-right corner of the repository page and select **Download ZIP**.
+    Alternatively, click the `<> Code` tab in the upper-right corner of the repository page and select **Download ZIP**.
 
-In MATLAB, open the `BIE-periodic` directory and then type the following command:
+3. In MATLAB, open the `BIE-periodic` directory and add the necessary path by running:
 
-```matlab
-addpath('mps_helpers')
-```
+    ```matlab
+    addpath('mps_helpers')
+    ```
+
+4. **Example Usage**: 
+   - You can run the `dirichlet_single_hole` example to observe how this software works. This example corresponds to **EXAMPLE 1** in the manuscript.
+
+## Examples
+
+This repository includes MATLAB implementations for the following problems:
+
+- **Dirichlet Boundary Value Problem (BVP)**
+- **Neumann Boundary Value Problem (BVP)**
+- **Steklov Eigenvalue Problem (EVP)**
+  
+These examples feature both single and multiple holes.
