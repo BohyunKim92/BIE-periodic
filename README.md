@@ -1,6 +1,6 @@
-# BIE_periodic
+# BIE-periodic
 
-Code implementing the Boundary Integral Equation (BIE) methods with the doubly-periodic Green's function from *"Layer Potential Methods for Doubly-Periodic Harmonic Functions"* by Bohyun Kim and Braxton Osting (preprint, arXiv). Please contact hyunbrianna@gmail.com for any inquiries.
+Code implementing the Boundary Integral Equation (BIE) methods with the doubly-periodic Green's function from *"Layer Potential Methods for Doubly-Periodic Harmonic Functions"* by Bohyun Kim and Braxton Osting (preprint, [arXiv:2505.03074](https://arxiv.org/abs/2505.03074). Please contact hyunbrianna@gmail.com for any inquiries.
 
 ## Acknowledgements
 
