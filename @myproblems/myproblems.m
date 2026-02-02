@@ -48,7 +48,10 @@ classdef myproblems < handle
                 if isempty(pr.rhs) || isempty(pr.A)
                     error('make sure to set up the rhs and matrix solver first.')
                 end
+                tic;
                 pr.co = pr.A\pr.rhs;
+                elapsed = toc;
+                fprintf('Time taken: %.4f seconds\n', elapsed);
                 pr.phis = pr.co(1:pr.ss.tN);
                 pr.ml.update_density(pr.phis);
                 pr.fluxes = 0;
