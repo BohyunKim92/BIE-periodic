@@ -24,6 +24,7 @@ classdef segments < handle
         pltnus      % Normals for plotting
         pltind      % Index sets for plotting
         oscils      % Wavenumbers for star-shaped oscillating boundaries
+        pt          % add fundamental domain
     end
     
     methods
@@ -183,14 +184,33 @@ classdef segments < handle
 
             for i = 1:ss.M
                 ith = ss.pltind{i};
+                iwegs = wsegs(ith);
+                isegs = segs(ith);
+                % use ptau object to consider periodicity
+                if ~isempty(ss.pt)
+                    segNotInTau= ss.pt.intau(isegs,2);
+                    shiftflag = sum(segNotInTau) > 0;
+                    if shiftflag
+                        % portion of this segment outside of parallelogram 
+                        shiftedisegs = ss.pt.all_dir_shift(isegs);
+                        shiftediwegs = ss.pt.all_dir_shift(iwegs);
+                    end
+                end
                 if opt == 1
-                    plot(wsegs(ith), 'w', 'LineWidth', width); hold on;
-                    plot(segs(ith), 'color',[.7 .7 1], 'LineWidth', width); hold on;
+                    if shiftflag
+                        for k = 1:numel(shiftedisegs)
+                            plot(shiftediwegs{k},'color','w','LineWidth',width); hold on;
+                            plot(shiftedisegs{k},'color',[.7 .7 1],'LineWidth',width); hold on;
+                        end
+                    else
+                    plot(iwegs, 'w', 'LineWidth', width); hold on;
+                    plot(isegs, 'color',[.7 .7 1], 'LineWidth', width); hold on;
+                    end
                 elseif opt == 2
-                    fill(real(wsegs(ith)), imag(wsegs(ith)), 'w'); hold on;
-                    plot(wsegs(ith), 'w', 'LineWidth', width); hold on;
-                    fill(real(segs(ith)), imag(segs(ith)), [.7 .7 1]); hold on;
-                    plot(segs(ith),'color', [.7 .7 1], 'LineWidth', width); hold on;
+                    fill(real(iwegs), imag(iwegs), 'w'); hold on;
+                    plot(iwegs, 'w', 'LineWidth', width); hold on;
+                    fill(real(isegs), imag(isegs), [.7 .7 1]); hold on;
+                    plot(isegs,'color', [.7 .7 1], 'LineWidth', width); hold on;
                 end
             end
         end
@@ -215,6 +235,10 @@ classdef segments < handle
 
         function centers(ss, cs)
             ss.cs = cs;
+        end
+
+        function addPtau(ss,pt)
+            ss.pt = pt;
         end
 
         function radiuss(ss, rs)

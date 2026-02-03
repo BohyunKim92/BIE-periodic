@@ -191,10 +191,8 @@ classdef Ptau < handle
             error('Invalid option for shifting.');
         end
         % Get corresponding mask function and shift vector
-        shiftFunc = pt.shift_fs{opt};
         shiftdir = pt.shift_dir{opt};
-        ind = shiftFunc(zz);
-        result = unique(zz(ind) + shiftdir);
+        result = zz + shiftdir;
     end
 
     function plot(pt, width)

@@ -64,8 +64,12 @@ classdef myproblems < handle
                 if isempty(pr.rhs) 
                     error('make sure to set up the rhs and matrix solver first.')
                 end
+                tic;
                 pr.co = pr.A\pr.rhs;
+                elapsed = toc;
+                fprintf('Time taken: %.4f seconds\n', elapsed);
                 pr.phis = pr.co;
+                pr.ml.update_density(pr.phis);
                 pr.fluxes = zeros(pr.M,1);
                 for i = 1:pr.M
                     pr.fluxes(i) = pr.ss.ws(pr.ss.indxs{i})* pr.phis(pr.ss.indxs{i});
@@ -201,8 +205,8 @@ classdef myproblems < handle
                     uu = uu+uu2;
                 end
             elseif pr.type == 'N'
-                % the final solution is 
-                [~, uu] = pr.ml.slayer(zz,pr.phis);
+                % the final solution is in single layer potential
+                [~, uu] = pr.ml.slayer(zz);
             end
         end
         
@@ -264,20 +268,34 @@ classdef myproblems < handle
                 end
                 zz = pt.solgrid;
                 uu = pr.eval(zz);
-                ind = intau(pt,pt.solgrid,2);
+                ind = pt.intau(pt.solgrid,2);
                 uu(ind) = NaN;
                 lw = 2; %line width of the contour
                 figure;
                 xx = real(zz);
                 yy = imag(zz);
                 lw = 2;
-                contour(xx,yy,uu,levels,'LineWidth',lw,'color',color);hold on;
-                % fill in hole
-                pr.ss.plot2(2); hold on;
+                if nargin >3
+                    contour(xx,yy,uu,levels,'LineWidth',lw,'color',color);
+                else
+                    contour(xx,yy,uu,levels,'LineWidth',lw);% color unspecified
+                end
+                hold on;
+                pr.ss.addPtau(pt)
+
+                if pr.type == 'D'
+                    % fill in hole
+                    pr.ss.plot2(2); 
+                else % pr.type == 'N' in this case
+                    % only the boundary of holes
+                    pr.ss.plot2(1)
+                end
+                hold on;
                 % plot torus boundary
                 pt.plot2(1);
                 axis equal;
                 ax = gca;
+                axis([-real(pt.tau)/2 1+real(pt.tau)-real(pt.tau)/2 0  imag(pt.tau)])
                 set(gca,'xtick',[],'ytick',[]);
                 set(gca,'fontsize',20)
             end
