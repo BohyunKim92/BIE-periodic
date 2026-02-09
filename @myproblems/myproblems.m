@@ -282,7 +282,9 @@ classdef myproblems < handle
                 end
                 hold on;
                 pr.ss.addPtau(pt)
-
+                if nargin <=3
+                    colorbar;
+                end
                 if pr.type == 'D'
                     % fill in hole
                     pr.ss.plot2(2); 
@@ -296,8 +298,10 @@ classdef myproblems < handle
                 axis equal;
                 ax = gca;
                 axis([-real(pt.tau)/2 1+real(pt.tau)-real(pt.tau)/2 0  imag(pt.tau)])
+                ax.LineWidth = lw;
                 set(gca,'xtick',[],'ytick',[]);
                 set(gca,'fontsize',20)
+               
             end
         end
          
