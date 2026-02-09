@@ -9,8 +9,6 @@
 % - Custom methods written by Bohyun Kim (University of Utah, Math, 2025)
 
 clear all; close all; clc;
-
-verb = 0;
 addpath('mps_helpers');  % Add helper functions to path
 
 %% Define the geometry: one circular hole
@@ -21,8 +19,8 @@ rs = [0.1];                    % Radius
 rphi = {@(t) -sin(t)};         % Dirichlet boundary data
 
 % Define periodicity (tau = complex lattice vector)
-tau = 1i;                     % Option: vertical periodicity
-%tau = 0.5 + sqrt(3)/2 * 1i;    % Option: 60-degree lattice
+%tau = 1i;                     % Option: square torus
+tau = 0.5 + sqrt(3)/2 * 1i;    % Option: equilateral torus
 
 %% Discretize the boundary
 ss = segments.circles(cs, rs);          % Create circular segment
@@ -32,7 +30,7 @@ rhss.requadrature(250);
 
 %% Build layer potential representation
 ml = mylayerpot(ss, tau);                         % Operator using coarse grid
-rhs = mylayerpot(rhss, tau, 'ms', rphi, 't');     % RHS using fine grid
+rhs = mylayerpot(rhss, tau, 's', rphi, 't');     % RHS using fine grid
 rhseval = rhs.evalbd;                             % Evaluate RHS on boundary
 
 % Map fine discretization to coarse for solving
@@ -42,7 +40,6 @@ conv_indxs = segments.coarse_to_fine_indxs(rhss, ss);
 pr = myproblems(ml, 'D');                  % 'D' = Dirichlet
 pr.setuprhs(rhseval(conv_indxs));          % Set RHS
 pr.solve;                                  % Solve linear system
-
 %% Plot the solution in the fundamental domain
 pt = Ptau(tau);  % Setup parallelogram domain
 
@@ -53,3 +50,12 @@ levels = 10 * [-0.0035, -0.003, -0.0025, -0.002, -0.0015, -0.001, -0.0008, ...
 
 % Plot solution with specified contour levels and black colormap
 pr.plot(pt, levels, [0 0 0]);
+
+%% Error calculation
+ss2 = segments.circles(cs, [0.18]); % segment to evaluate at the boundary
+ss2.requadrature([50]);  
+uexact = rhs.eval(ss2.zs);
+u = pr.eval(ss2.zs);
+error = norm(u-uexact,'inf');
+
+
