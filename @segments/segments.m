@@ -136,18 +136,36 @@ classdef segments < handle
             end
         end
 
-        function [zzind] = inseg(ss, zz, opt)
-            % Determine if points zz are inside (opt=1) or outside (opt=2) the segments
-            if nargin < 3, opt = 1; end
-            ind = false(size(zz));
-            for i = 1:ss.M
-                s = ss.segs{i};
-                tval = myutils.ztot(zz, ss.cs(i));
-                rseg = abs(s.Z(tval) - ss.cs(i));
-                rz = abs(zz - ss.cs(i));
-                ind(rz <= rseg) = true;
+        function [zzind] = inseg(ss,zz,opt)
+        %given segs, determine whether zz is inside the segs or not.
+        %if option ==1, output index inside segs,default
+        % option ==2, index outside of segs
+        if nargin <=2
+            opt = 1;
+        end
+
+        ind = false(size(zz));
+        for i = 1:ss.M
+            s = ss.segs{i};
+            tval = myutils.ztot(zz,ss.cs(i)); %% map zz-cs(i) to angles from 2*pi*[0,1].
+            rseg = abs(s.Z(tval)-ss.cs(i)); rz = abs(zz-ss.cs(i));
+            if opt == 1
+                ind((rz<=rseg)) =true;
+            elseif opt ==2  
+                ind((rz<=rseg)) =true;
+            else
+                disp('error opt must be 1 or 2');
             end
-            zzind = opt == 1 && ind | opt == 2 && ~ind;
+            %plot(s.x,'b'); hold on;
+        end
+
+        if opt ==1 
+            zzind = logical(ind);
+        elseif opt ==2  
+             zzind = logical(~ind);
+        else
+            disp('error opt must be 1 or 2');
+        end
         end
 
         function plot(ss)
@@ -197,20 +215,43 @@ classdef segments < handle
                     end
                 end
                 if opt == 1
-                    if shiftflag
-                        for k = 1:numel(shiftedisegs)
-                            plot(shiftediwegs{k},'color','w','LineWidth',width); hold on;
-                            plot(shiftedisegs{k},'color',[.7 .7 1],'LineWidth',width); hold on;
+                    if ~isempty(ss.pt)
+                        if shiftflag
+                            for k = 1:numel(shiftedisegs)
+                                %plot only if they is portion of segment
+                                %inside pt
+                                if sum(ss.pt.intau(shiftedisegs{k}, 1)) >0
+                                    plot(shiftediwegs{k},'color','w','LineWidth',width); hold on;
+                                    plot(shiftedisegs{k},'color',[.7 .7 1],'LineWidth',width); hold on;
+                                end
+                            end
                         end
-                    else
-                    plot(iwegs, 'w', 'LineWidth', width); hold on;
-                    plot(isegs, 'color',[.7 .7 1], 'LineWidth', width); hold on;
+                    end
+                    if sum(ss.pt.intau(isegs, 1)) >0
+                        plot(iwegs, 'w', 'LineWidth', width); hold on;
+                        plot(isegs, 'color',[.7 .7 1], 'LineWidth', width); hold on;
                     end
                 elseif opt == 2
-                    fill(real(iwegs), imag(iwegs), 'w'); hold on;
-                    plot(iwegs, 'w', 'LineWidth', width); hold on;
-                    fill(real(isegs), imag(isegs), [.7 .7 1]); hold on;
-                    plot(isegs,'color', [.7 .7 1], 'LineWidth', width); hold on;
+                    if ~isempty(ss.pt)
+                        if shiftflag
+                            for k = 1:numel(shiftedisegs)
+                                %plot only if they is portion of segment
+                                %inside pt
+                                if sum(ss.pt.intau(shiftedisegs{k}, 1)) >0
+                                    fill(real(shiftediwegs{k}), imag(shiftediwegs{k}), 'w'); hold on;
+                                    plot(shiftediwegs{k}, 'w', 'LineWidth', width); hold on;
+                                    fill(real(shiftedisegs{k}), imag(shiftedisegs{k}), [.7 .7 1]); hold on;
+                                    plot(shiftedisegs{k},'color', [.7 .7 1], 'LineWidth', width); hold on;
+                                end
+                            end
+                        end
+                    end
+                    if sum(ss.pt.intau(isegs, 1)) >0
+                        fill(real(iwegs), imag(iwegs), 'w'); hold on;
+                        plot(iwegs, 'w', 'LineWidth', width); hold on;
+                        fill(real(isegs), imag(isegs), [.7 .7 1]); hold on;
+                        plot(isegs,'color', [.7 .7 1], 'LineWidth', width); hold on;
+                    end
                 end
             end
         end
